@@ -75,7 +75,7 @@ public class ANN {
 			throw new Exception("ANN model must be built first");
 		}
 		System.out.println("Minibatch Size: " + batchsize);
-		System.out.println("Epochs Size: " + batchsize);
+		System.out.println("Epochs Size: " + nEpochs);
 		System.out.println("Training...");
 		int notAtPeak = 0; // the number of times not at peak
 		double peakAcc = -1; // the best accuracy of the previous epochs
