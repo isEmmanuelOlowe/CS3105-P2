@@ -122,13 +122,13 @@ public class P2Main {
             //// YOUR CODE HERE        
             Object obj = parser.parse(new FileReader(args[3]));
             JSONObject jsonObject = (JSONObject) obj;
-            hiddenLayers = Math.toIntExact(jsonObject.get("n_hidden_layers"));
-            hiddenLayerNodes = Math.toIntExact(jsonObject.get("n_nodes_per_hidden_layer"));
+            hiddenLayers = (int) jsonObject.get("n_hidden_layers");
+            hiddenLayerNodes = (int) jsonObject.get("n_nodes_per_hidden_layer");
             activationFunction = (String) jsonObject.get("activation_function");
             learningRate = (double) jsonObject.get("learning_rate");
-            batchSize = Math.toIntExact(jsonObject.get("batchsize"));
-            epochs = Math.toIntExact(jsonObject.get("nEpochs"));
-            patience = Math.toIntExact(jsonObject.get("patience"));
+            batchSize = (int) jsonObject.get("batchsize");
+            epochs = (int) jsonObject.get("nEpochs");
+            patience = (int) jsonObject.get("patience");
             // build and train an ANN with the given data and parameters
             Layer layer = ann.build(trainset.getInputDims(), trainset.getOutDims(), hiddenLayers, hiddenLayerNodes, activationFunction);
             Loss crossEntropy = new CrossEntropy();
