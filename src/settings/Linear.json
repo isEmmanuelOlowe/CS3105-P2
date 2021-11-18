@@ -1,0 +1,9 @@
+{
+    "n_hidden_layers": 0,
+    "n_nodes_per_hidden_layer": 0,
+    "activation_function": "Softmax",
+    "learning_rate": 0.001,
+    "batchsize": 128,
+    "nEpochs": 2000,
+    "patience": 100
+}
