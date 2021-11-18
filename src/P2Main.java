@@ -140,11 +140,15 @@ public class P2Main {
 
             System.out.println("Error Logging Prints...");
             System.out.println("Dimension Test Set Size: " + trainset.getSize());
+            System.out.println("Dimension Dev Set Size: " + devset.getSize());
             // build and train an ANN with the given data and parameters
-            Layer layer = ann.build(trainset.getInputDims(), trainset.getOutDims(), hiddenLayers, hiddenLayerNodes,
+
+            // building the network
+            Layer network = ann.build(trainset.getInputDims(), trainset.getOutDims(), hiddenLayers, hiddenLayerNodes,
                     activationFunction);
             Loss crossEntropy = new CrossEntropy();
-            Optimizer sGradientDescent = new SGD(layer, learningRate);
+            Optimizer sGradientDescent = new SGD(network, learningRate);
+            // training the network
             ann.train(crossEntropy, sGradientDescent, trainset, devset, batchSize, epochs, patience, rnd);
             // evaluate the trained ANN on the test set and report results
             try {
