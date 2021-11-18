@@ -137,14 +137,10 @@ public class P2Main {
             batchSize = ((Long) jsonObject.get("batchsize")).intValue();
             epochs = ((Long) jsonObject.get("nEpochs")).intValue();
             patience = ((Long) jsonObject.get("patience")).intValue();
-            System.out.println("Printing Values...");
-            System.out.println(hiddenLayers);
-            System.out.println(hiddenLayerNodes);
-            System.out.println(activationFunction);
-            System.out.println(learningRate);
-            System.out.println(batchSize);
-            System.out.println(epochs);
-            System.out.println(patience);
+
+            System.out.println("Error Logging Prints...");
+            System.out.println("Dimension X: " + trainset.getInputDims());
+            System.out.println("Dimension Y: " + trainset.getOutDims());
             // build and train an ANN with the given data and parameters
             Layer layer = ann.build(trainset.getInputDims(), trainset.getOutDims(), hiddenLayers, hiddenLayerNodes,
                     activationFunction);
