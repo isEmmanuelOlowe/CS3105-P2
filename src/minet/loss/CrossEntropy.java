@@ -6,18 +6,23 @@ import org.jblas.DoubleMatrix;
 
 /**
  * A class for computing cross entropy loss
+ * 
  * @author Phong Le
  */
 public class CrossEntropy implements Loss {
     DoubleMatrix Yhat;
     int[] labels;
 
-    public CrossEntropy() { }
+    public CrossEntropy() {
+    }
 
     /**
      * Compute a loss value given groud-truth Y and estimate Yhat
-     * @param Y a [minibatch_size x 1] matrix, each row is the ground-truth label of an instance
-     * @param Yhat a [minibatch_size x d] matrix, each row is a distribution over the category set
+     * 
+     * @param Y    a [minibatch_size x 1] matrix, each row is the ground-truth label
+     *             of an instance
+     * @param Yhat a [minibatch_size x d] matrix, each row is a distribution over
+     *             the category set
      * @return a double
      */
     @Override
@@ -28,11 +33,13 @@ public class CrossEntropy implements Loss {
             this.labels[i] = (int) Y.data[i];
         }
 
-        double lossVal = 0;        
-        for (int i = 0; i < labels.length; i++) {            
+        double lossVal = 0;
+        System.out.println("lables length?: " + labels.length);
+        for (int i = 0; i < labels.length; i++) {
+            System.out.println("i: " + i);
             lossVal -= Math.log(Yhat.get(i, labels[i]) + 1e-7);
         }
-        return lossVal / (double)labels.length;
+        return lossVal / (double) labels.length;
     }
 
     @Override
