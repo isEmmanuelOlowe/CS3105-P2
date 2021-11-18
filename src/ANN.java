@@ -133,7 +133,12 @@ public class ANN {
 
 		//// YOUR CODE HERE		
 		Layer[] modelLayers = new Layer[2 + 2 * n_hidden_layers];
-		modelLayers[0] = new Linear(input_dims, n_hidden_layers, new Linear.WeightInitXavier());
+		if (n_hidden_layers == 0) {
+			modelLayers[0] = new Linear(input_dims, output_dims, new Linear.WeightInitXavier());
+		}
+		else {
+			modelLayers[0] = new Linear(input_dims, n_nodes_per_hidden_layer, new Linear.WeightInitXavier());
+		}
 		for (int i = 1; i < 2 * n_hidden_layers; i += 2) {
 			// Selects the activation Function
 			if (activation_function == "Softmax") {
