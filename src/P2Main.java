@@ -29,73 +29,80 @@ public class P2Main {
     static Dataset devset;
     static Dataset testset;
 
-    public static void printUsage(){
+    public static void printUsage() {
         System.out.println("Input not recognised. Usage is:");
-        System.out.println("\tjava -cp lib/jblas-1.2.5.jar:minet:. P2Main <train_data> <test_data> <random_seed> <json_setting_file> [<apply_preprocessing>]");
+        System.out.println(
+                "\tjava -cp lib/jblas-1.2.5.jar:minet:. P2Main <train_data> <test_data> <random_seed> <json_setting_file> [<apply_preprocessing>]");
         System.out.println("\nExample 1: build an ANN for Part1 and Part2 (no preprocessing is applied)");
-        System.out.println("\tjava -cp lib/jblas-1.2.5.jar:minet:. data/Part1/train.txt data/Part1/test.txt 123 settings/example.json");
+        System.out.println(
+                "\tjava -cp lib/jblas-1.2.5.jar:minet:. data/Part1/train.txt data/Part1/test.txt 123 settings/example.json");
         System.out.println("Example 2: build an ANN for Part3 (preprocessing is applied)");
-        System.out.println("\tjava -cp lib/jblas-1.2.5.jar:minet:. data/Part3/train.txt data/Part3/test.txt 123 settings/example.json 1");
+        System.out.println(
+                "\tjava -cp lib/jblas-1.2.5.jar:minet:. data/Part3/train.txt data/Part3/test.txt 123 settings/example.json 1");
         System.out.println("Example 2: build an ANN for Part3 (preprocessing is not applied)");
-        System.out.println("\tjava -cp lib/jblas-1.2.5.jar:minet:. data/Part3/train.txt data/Part3/test.txt 123 settings/example.json");
+        System.out.println(
+                "\tjava -cp lib/jblas-1.2.5.jar:minet:. data/Part3/train.txt data/Part3/test.txt 123 settings/example.json");
     }
 
-
-    /** 
-     * apply data preprocessing (imputation of missing values and standardisation) on trainset (Part 3 only)     
-    */
-    public static void preprocess_trainset(){        
-        //// YOUR CODE HERE (PART 3 ONLY) 
-    }
-
-    /** 
-     * apply data preprocessing (imputation of missing values and standardisation) on testset (Part 3 only)     
-    */
-    public static void preprocess_testset(){        
+    /**
+     * apply data preprocessing (imputation of missing values and standardisation)
+     * on trainset (Part 3 only)
+     */
+    public static void preprocess_trainset() {
         //// YOUR CODE HERE (PART 3 ONLY)
     }
 
-    public static void main(String[] args){        
-        if (args.length < 4){
+    /**
+     * apply data preprocessing (imputation of missing values and standardisation)
+     * on testset (Part 3 only)
+     */
+    public static void preprocess_testset() {
+        //// YOUR CODE HERE (PART 3 ONLY)
+    }
+
+    public static void main(String[] args) {
+        if (args.length < 4) {
             printUsage();
             return;
-        }        
+        }
         try {
-            // set jblas random seed (for reproducibility)		
+            // set jblas random seed (for reproducibility)
             org.jblas.util.Random.seed(Integer.parseInt(args[2]));
             Random rnd = new Random(Integer.parseInt(args[2]));
-            
+
             // turn off jblas info messages
             Logger.getLogger().setLevel(Logger.WARNING);
 
             // load train and test data into trainset and testset
-            System.out.println("Loading data...");              
+            System.out.println("Loading data...");
             //// YOUR CODE HERE
             System.out.println(Arrays.toString(args));
             Dataset trainset = Dataset.loadTxt(args[0]);
             Dataset testset = Dataset.loadTxt(args[1]);
-        
-            
+
             // check whether data-preprocessing is applied (Part 3)
             boolean preprocess = false;
-            if (args.length==5){
-                if (!args[4].equals("0") && !args[4].equals("1")){
+            if (args.length == 5) {
+                if (!args[4].equals("0") && !args[4].equals("1")) {
                     System.out.println("HERE" + args[4]);
                     printUsage();
-                    System.out.println("\nError: <apply_preprocessing> must be either empty (off), or 0 (off) or 1 (on)");
+                    System.out
+                            .println("\nError: <apply_preprocessing> must be either empty (off), or 0 (off) or 1 (on)");
                     return;
-                }            
+                }
                 if (args[4].equals("1"))
-                    preprocess = true;   
+                    preprocess = true;
             }
-            
+
             // apply data-processing on trainset
             if (preprocess)
                 preprocess_trainset();
 
-            // split train set into train set (trainset) and validation set, also called development set (devset)
-            // suggested split ratio: 80/20        
-            trainset.shuffle(rnd); // shuffle the train data before we split. NOTE: this line was updated on Nov 11th.
+            // split train set into train set (trainset) and validation set, also called
+            // development set (devset)
+            // suggested split ratio: 80/20
+            trainset.shuffle(rnd); // shuffle the train data before we split. NOTE: this line was updated on Nov
+                                   // 11th.
             //// YOUR CODE HERE
             int length = trainset.getSize();
             int devLength = (int) Math.floor(length * 0.2);
@@ -108,7 +115,8 @@ public class P2Main {
             Dataset devset = new Dataset(devSetX, devSetY);
             trainset = new Dataset(trainingSetX, trainingSetY);
 
-            // read all parameters from the provided json setting file (see settings/example.json for an example)
+            // read all parameters from the provided json setting file (see
+            // settings/example.json for an example)
             //// YOUR CODE HERE
             JSONParser parser = new JSONParser();
             int hiddenLayers;
@@ -119,35 +127,44 @@ public class P2Main {
             int epochs;
             int patience;
             ANN ann = new ANN();
-            //// YOUR CODE HERE        
+            //// YOUR CODE HERE
             Object obj = parser.parse(new FileReader(args[3]));
             JSONObject jsonObject = (JSONObject) obj;
             hiddenLayers = ((Long) jsonObject.get("n_hidden_layers")).intValue();
-            hiddenLayerNodes = ((Long)jsonObject.get("n_nodes_per_hidden_layer")).intValue();
+            hiddenLayerNodes = ((Long) jsonObject.get("n_nodes_per_hidden_layer")).intValue();
             activationFunction = (String) jsonObject.get("activation_function");
             learningRate = ((Double) jsonObject.get("learning_rate")).doubleValue();
             batchSize = ((Long) jsonObject.get("batchsize")).intValue();
             epochs = ((Long) jsonObject.get("nEpochs")).intValue();
             patience = ((Long) jsonObject.get("patience")).intValue();
+            System.out.println("Printing Values...");
+            System.out.println(hiddenLayers);
+            System.out.println(hiddenLayerNodes);
+            System.out.println(activationFunction);
+            System.out.println(learningRate);
+            System.out.println(batchSize);
+            System.out.println(epochs);
+            System.out.println(patience);
             // build and train an ANN with the given data and parameters
-            Layer layer = ann.build(trainset.getInputDims(), trainset.getOutDims(), hiddenLayers, hiddenLayerNodes, activationFunction);
+            Layer layer = ann.build(trainset.getInputDims(), trainset.getOutDims(), hiddenLayers, hiddenLayerNodes,
+                    activationFunction);
             Loss crossEntropy = new CrossEntropy();
             Optimizer sGradientDescent = new SGD(layer, learningRate);
             ann.train(crossEntropy, sGradientDescent, trainset, devset, batchSize, epochs, patience, rnd);
-            // evaluate the trained ANN on the test set and report results	
-            try{
-                // apply data-preprocessing on testset        
+            // evaluate the trained ANN on the test set and report results
+            try {
+                // apply data-preprocessing on testset
                 if (preprocess)
                     preprocess_testset();
                 double testAcc = ann.eval(testset);
                 System.out.println("accuracy on test set: " + testAcc);
-            } catch(Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 return;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-		
-	}
+
+    }
 }
