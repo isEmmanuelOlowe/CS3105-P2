@@ -85,8 +85,10 @@ public class ANN {
 			System.out.printf("epoch %4d\t", e);
 			traindata.shuffle(rnd); // always shuffle the data before each epoch.
 			totalLoss = 0;
-
+			int counter = -1;
 			while (true) {
+				counter += 1;
+				System.out.println("counter = " + counter);
 				Pair<DoubleMatrix> batch = traindata.getNextMiniBatch(batchsize); // get the next mini-batch
 				if (batch == null) // finish this epoch if there are no items left
 					break;
