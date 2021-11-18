@@ -72,8 +72,8 @@ public class P2Main {
             System.out.println("Loading data...");              
             //// YOUR CODE HERE
             System.out.println(Arrays.toString(args));
-            Dataset trainset = Dataset.loadTxt(args[1]);
-            Dataset testset = Dataset.loadTxt(args[2]);
+            Dataset trainset = Dataset.loadTxt(args[0]);
+            Dataset testset = Dataset.loadTxt(args[1]);
         
             
             // check whether data-preprocessing is applied (Part 3)
@@ -120,7 +120,7 @@ public class P2Main {
             int patience;
             ANN ann = new ANN();
             //// YOUR CODE HERE        
-            Object obj = parser.parse(new FileReader(args[4]));
+            Object obj = parser.parse(new FileReader(args[3]));
             JSONObject jsonObject = (JSONObject) obj;
             hiddenLayers = (int) jsonObject.get("n_hidden_layers");
             hiddenLayerNodes = (int) jsonObject.get("n_nodes_per_hidden_layer");
