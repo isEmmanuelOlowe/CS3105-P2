@@ -71,6 +71,7 @@ public class P2Main {
             // load train and test data into trainset and testset
             System.out.println("Loading data...");              
             //// YOUR CODE HERE
+            System.out.println(Arrays.toString(args))
             Dataset trainset = Dataset.loadTxt(args[1]);
             Dataset testset = Dataset.loadTxt(args[2]);
         
