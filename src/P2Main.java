@@ -22,6 +22,7 @@ import org.json.simple.parser.*;
 
 // Helper Method Class
 import java.util.Arrays;
+import ANNHelper;
 
 public class P2Main {
 
@@ -71,8 +72,8 @@ public class P2Main {
 		// load train and test data into trainset and testset
 		System.out.println("Loading data...");              
 		//// YOUR CODE HERE
-        Dataset trainset = Dataset.loadTxt(args[1])
-        Dataset testset = Dataset.loadTxt(args[2])
+        Dataset trainset = Dataset.loadTxt(args[1]);
+        Dataset testset = Dataset.loadTxt(args[2]);
         
         // check whether data-preprocessing is applied (Part 3)
         boolean preprocess = false;

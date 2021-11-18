@@ -151,10 +151,10 @@ public class ANN {
 
 			// Checks if it is the last hidden layer
 			if (2 * n_hidden_layers - 1 == i) {
-				modelLayers[i + 1] = new Linear(n_nodes_per_hidden_layer, output_dims, new Linear.WeighInitXavier()
+				modelLayers[i + 1] = new Linear(n_nodes_per_hidden_layer, output_dims, new Linear.WeighInitXavier();
 			}
 			else {
-				modelLayers[i + 1] = new Linear(n_nodes_per_hidden_layer, n_nodes_per_hidden_layer, new Linear.WeighInitXavier()
+				modelLayers[i + 1] = new Linear(n_nodes_per_hidden_layer, n_nodes_per_hidden_layer, new Linear.WeighInitXavier();
 			}
 		}
 		modelLayers[1 + 2 * n_hidden_layers] = new Softmax();
