@@ -132,8 +132,8 @@ public class ANN {
 		Layer model = null;
 
 		//// YOUR CODE HERE		
-		Layer[] modelLayers = new Layers[2 + 2 * n_hidden_layers];
-		modelLayers[0] = new Linear(input_dims, n_hidden_layers, new Linear.WeighInitXavier());
+		Layer[] modelLayers = new Layer[2 + 2 * n_hidden_layers];
+		modelLayers[0] = new Linear(input_dims, n_hidden_layers, new Linear.WeightInitXavier());
 		for (int i = 1; i < 2 * n_hidden_layers; i += 2) {
 			// Selects the activation Function
 			if (activation_function == "Softmax") {
@@ -151,10 +151,10 @@ public class ANN {
 
 			// Checks if it is the last hidden layer
 			if (2 * n_hidden_layers - 1 == i) {
-				modelLayers[i + 1] = new Linear(n_nodes_per_hidden_layer, output_dims, new Linear.WeighInitXavier());
+				modelLayers[i + 1] = new Linear(n_nodes_per_hidden_layer, output_dims, new Linear.WeightInitXavier());
 			}
 			else {
-				modelLayers[i + 1] = new Linear(n_nodes_per_hidden_layer, n_nodes_per_hidden_layer, new Linear.WeighInitXavier());
+				modelLayers[i + 1] = new Linear(n_nodes_per_hidden_layer, n_nodes_per_hidden_layer, new Linear.WeightInitXavier());
 			}
 		}
 		modelLayers[1 + 2 * n_hidden_layers] = new Softmax();
