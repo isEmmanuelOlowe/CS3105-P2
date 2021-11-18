@@ -60,63 +60,65 @@ public class P2Main {
             printUsage();
             return;
         }        
-
-        // set jblas random seed (for reproducibility)		
-		org.jblas.util.Random.seed(Integer.parseInt(args[2]));
-		Random rnd = new Random(Integer.parseInt(args[2]));
-		
-        // turn off jblas info messages
-        Logger.getLogger().setLevel(Logger.WARNING);
-
-		// load train and test data into trainset and testset
-		System.out.println("Loading data...");              
-		//// YOUR CODE HERE
-        Dataset trainset = Dataset.loadTxt(args[1]);
-        Dataset testset = Dataset.loadTxt(args[2]);
-        
-        // check whether data-preprocessing is applied (Part 3)
-        boolean preprocess = false;
-        if (args.length==5){
-            if (!args[4].equals("0") && !args[4].equals("1")){
-                System.out.println("HERE" + args[4]);
-                printUsage();
-                System.out.println("\nError: <apply_preprocessing> must be either empty (off), or 0 (off) or 1 (on)");
-                return;
-            }            
-            if (args[4].equals("1"))
-                 preprocess = true;   
-        }
-        
-        // apply data-processing on trainset
-        if (preprocess)
-            preprocess_trainset();
-
-        // split train set into train set (trainset) and validation set, also called development set (devset)
-        // suggested split ratio: 80/20        
-        trainset.shuffle(rnd); // shuffle the train data before we split. NOTE: this line was updated on Nov 11th.
-        //// YOUR CODE HERE
-        int length = trainset.getSize();
-        int devLength = (int) Math.floor(length * 0.2);
-        double[][] devSetX = Arrays.copyOfRange(trainset.getX(), 1, devLength);
-        double[][] devSetY = Arrays.copyOfRange(trainset.getY(), 1, devLength);
-
-        double[][] trainingSetX = Arrays.copyOfRange(trainset.getX(), devLength, length);
-        double[][] trainingSetY = Arrays.copyOfRange(trainset.getY(), devLength, length);
-
-        Dataset devset = new Dataset(devSetX, devSetY);
-        trainset = new Dataset(trainingSetX, trainingSetY);
-
-        // read all parameters from the provided json setting file (see settings/example.json for an example)
-        //// YOUR CODE HERE
-        JSONParser parser = new JSONParser();
-        int hiddenLayers;
-        int hiddenLayerNodes;
-        String activationFunction;
-        double learningRate;
-        int batchSize;
-        int epochs;
-        int patience;
         try {
+            // set jblas random seed (for reproducibility)		
+            org.jblas.util.Random.seed(Integer.parseInt(args[2]));
+            Random rnd = new Random(Integer.parseInt(args[2]));
+            
+            // turn off jblas info messages
+            Logger.getLogger().setLevel(Logger.WARNING);
+
+            // load train and test data into trainset and testset
+            System.out.println("Loading data...");              
+            //// YOUR CODE HERE
+            Dataset trainset = Dataset.loadTxt(args[1]);
+            Dataset testset = Dataset.loadTxt(args[2]);
+        
+            
+            // check whether data-preprocessing is applied (Part 3)
+            boolean preprocess = false;
+            if (args.length==5){
+                if (!args[4].equals("0") && !args[4].equals("1")){
+                    System.out.println("HERE" + args[4]);
+                    printUsage();
+                    System.out.println("\nError: <apply_preprocessing> must be either empty (off), or 0 (off) or 1 (on)");
+                    return;
+                }            
+                if (args[4].equals("1"))
+                    preprocess = true;   
+            }
+            
+            // apply data-processing on trainset
+            if (preprocess)
+                preprocess_trainset();
+
+            // split train set into train set (trainset) and validation set, also called development set (devset)
+            // suggested split ratio: 80/20        
+            trainset.shuffle(rnd); // shuffle the train data before we split. NOTE: this line was updated on Nov 11th.
+            //// YOUR CODE HERE
+            int length = trainset.getSize();
+            int devLength = (int) Math.floor(length * 0.2);
+            double[][] devSetX = Arrays.copyOfRange(trainset.getX(), 1, devLength);
+            double[][] devSetY = Arrays.copyOfRange(trainset.getY(), 1, devLength);
+
+            double[][] trainingSetX = Arrays.copyOfRange(trainset.getX(), devLength, length);
+            double[][] trainingSetY = Arrays.copyOfRange(trainset.getY(), devLength, length);
+
+            Dataset devset = new Dataset(devSetX, devSetY);
+            trainset = new Dataset(trainingSetX, trainingSetY);
+
+            // read all parameters from the provided json setting file (see settings/example.json for an example)
+            //// YOUR CODE HERE
+            JSONParser parser = new JSONParser();
+            int hiddenLayers;
+            int hiddenLayerNodes;
+            String activationFunction;
+            double learningRate;
+            int batchSize;
+            int epochs;
+            int patience;
+            ANN ann = new ANN();
+            //// YOUR CODE HERE        
             Object obj = parser.parse(new FileReader(args[4]));
             JSONObject jsonObject = (JSONObject) obj;
             hiddenLayers = (int) jsonObject.get("n_hidden_layers");
@@ -126,27 +128,25 @@ public class P2Main {
             batchSize = (int) jsonObject.get("batchsize");
             epochs = (int) jsonObject.get("nEpochs");
             patience = (int) jsonObject.get("patience");
+            // build and train an ANN with the given data and parameters
+            Layer layer = ann.build(trainset.getInputDims(), trainset.getOutDims(), hiddenLayers, hiddenLayerNodes, activationFunction);
+            Loss crossEntropy = new CrossEntropy();
+            Optimizer sGradientDescent = new SGD(layer, learningRate);
+            ann.train(crossEntropy, sGradientDescent, trainset, devset, batchSize, epochs, patience, rnd);
+            // evaluate the trained ANN on the test set and report results	
+            try{
+                // apply data-preprocessing on testset        
+                if (preprocess)
+                    preprocess_testset();
+                double testAcc = ann.eval(testset);
+                System.out.println("accuracy on test set: " + testAcc);
+            } catch(Exception e){
+                System.out.println(e.getMessage());
+                return;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 		
-		// build and train an ANN with the given data and parameters
-        ANN ann = new ANN();
-        //// YOUR CODE HERE        
-        Layer layer = ann.build(trainset.getInputDims(), trainset.getOutDims(), hiddenLayers, hiddenLayerNodes, activationFunction);
-        Loss crossEntropy = new CrossEntropy();
-        Optimizer sGradientDescent = new SGD(layer, learningRate);
-        ann.train(crossEntropy, sGradientDescent, trainset, devset, batchSize, epochs, patience, rnd);
-        // evaluate the trained ANN on the test set and report results	
-        try{
-            // apply data-preprocessing on testset        
-            if (preprocess)
-                preprocess_testset();
-		    double testAcc = ann.eval(testset);
-		    System.out.println("accuracy on test set: " + testAcc);
-        } catch(Exception e){
-            System.out.println(e.getMessage());
-            return;
-        }
 	}
 }
