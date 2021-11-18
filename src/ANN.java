@@ -132,7 +132,33 @@ public class ANN {
 		Layer model = null;
 
 		//// YOUR CODE HERE		
+		Layer[] modelLayers = new Layers[2 + 2 * n_hidden_layers];
+		modelLayers[0] = new Linear(input_dims, n_hidden_layers, new Linear.WeighInitXavier());
+		for (int i = 1; i < 2 * n_hidden_layers; i += 2) {
+			// Selects the activation Function
+			if (activation_function == "Softmax") {
+				modelLayers[i] = new Softmax();
+			}
+			else if (activation_function == "Tanh") {
+				modelLayers[i] = new Tanh();
+			}
+			else if (activation_function == "Sigmoid") {
+				modelLayers[i] = new Sigmoid();
+			}
+			else  {
+				modelLayers[i] = new ReLU();
+			}
 
+			// Checks if it is the last hidden layer
+			if (2 * n_hidden_layers - 1 == i) {
+				modelLayers[i + 1] = new Linear(n_nodes_per_hidden_layer, output_dims, new Linear.WeighInitXavier()
+			}
+			else {
+				modelLayers[i + 1] = new Linear(n_nodes_per_hidden_layer, n_nodes_per_hidden_layer, new Linear.WeighInitXavier()
+			}
+		}
+		modelLayers[1 + 2 * n_hidden_layers] = new Softmax();
+		model = new Sequential (modelLayers);
 		// print out the built model
 		System.out.println("Built model: ");
 		System.out.println(model);

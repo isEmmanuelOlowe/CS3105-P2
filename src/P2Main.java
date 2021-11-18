@@ -12,6 +12,17 @@ import minet.optim.Optimizer;
 import minet.optim.SGD;
 import minet.util.Pair;
 
+// For file import
+import java.io.FileReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import org.json.simple.*;
+import org.json.simple.parser.*;
+
+// Helper Method Class
+import java.util.Arrays;
+
 public class P2Main {
 
     static Dataset trainset;
@@ -60,8 +71,9 @@ public class P2Main {
 		// load train and test data into trainset and testset
 		System.out.println("Loading data...");              
 		//// YOUR CODE HERE
+        Dataset trainset = Dataset.loadTxt(args[1])
+        Dataset testset = Dataset.loadTxt(args[2])
         
-
         // check whether data-preprocessing is applied (Part 3)
         boolean preprocess = false;
         if (args.length==5){
@@ -83,16 +95,48 @@ public class P2Main {
         // suggested split ratio: 80/20        
         trainset.shuffle(rnd); // shuffle the train data before we split. NOTE: this line was updated on Nov 11th.
         //// YOUR CODE HERE
+        int length = trainset.getSize();
+        int devLength = (int) Math.floor(length * 0.2);
+        double[][] devSetX = Arrays.copyOfRange(trainset.getX(), 1, devLength);
+        double[][] devSetY = Arrays.copyOfRange(trainset.getY(), 1, devLength);
 
+        double[][] trainingSetX = Arrays.copyOfRange(trainset.getX(), devLength, length);
+        double[][] trainingSetY = Arrays.copyOfRange(trainset.getY(), devLength, length);
+
+        Dataset devset = new Dataset(devSetX, devSetY);
+        trainset = new Dataset(trainingSetX, trainingSetY);
 
         // read all parameters from the provided json setting file (see settings/example.json for an example)
         //// YOUR CODE HERE
-
+        JSONParser parser = new JSONParser();
+        int hiddenLayers;
+        int hiddenLayerNodes;
+        String activationFunction;
+        double learningRate;
+        int batchSize;
+        int epochs;
+        int patience;
+        try {
+            Object obj = parser.parse(new FileReader(args[4]));
+            JSONObject jsonObject = (JSONObject) obj;
+            hiddenLayers = (int) jsonObject.get("n_hidden_layers");
+            hiddenLayerNodes = (int) jsonObject.get("n_nodes_per_hidden_layer");
+            activationFunction = (String) jsonObject.get("activation_function");
+            learningRate = (int) jsonObject.get("learning_rate");
+            batchSize = (int) jsonObject.get("batchsize");
+            epochs = (int) jsonObject.get("nEpochs");
+            patience = (int) jsonObject.get("patience");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 		
 		// build and train an ANN with the given data and parameters
         ANN ann = new ANN();
         //// YOUR CODE HERE        
-
+        Layer layer = ann.build(trainset.getInputDims(), trainset.getOutDims(), hiddenLayers, hiddenLayerNodes, activationFunction);
+        Loss crossEntropy = new CrossEntropy();
+        Optimizer sGradientDescent = new SGD(layer, learningRate);
+        ann.train(crossEntropy, sGradientDescent, trainset, devset, batchSize, epochs, patience, rnd);
         // evaluate the trained ANN on the test set and report results	
         try{
             // apply data-preprocessing on testset        
