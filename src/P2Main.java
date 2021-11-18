@@ -139,8 +139,7 @@ public class P2Main {
             patience = ((Long) jsonObject.get("patience")).intValue();
 
             System.out.println("Error Logging Prints...");
-            System.out.println("Dimension X: " + trainset.getInputDims());
-            System.out.println("Dimension Y: " + trainset.getOutDims());
+            System.out.println("Dimension Test Set Size: " + trainset.getSize());
             // build and train an ANN with the given data and parameters
             Layer layer = ann.build(trainset.getInputDims(), trainset.getOutDims(), hiddenLayers, hiddenLayerNodes,
                     activationFunction);
