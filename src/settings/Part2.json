@@ -1,9 +1,9 @@
 {
-    "n_hidden_layers": 5,
+    "n_hidden_layers": 4,
     "n_nodes_per_hidden_layer": 20,
     "activation_function": "ReLU",
-    "learning_rate": 0.5,
-    "batchsize": 256,
-    "nEpochs": 4000,
+    "learning_rate": 0.7,
+    "batchsize": 138,
+    "nEpochs": 1000,
     "patience": 500
 }
