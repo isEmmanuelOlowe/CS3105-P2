@@ -111,7 +111,6 @@ public class P2Main {
 
             double[][] trainingSetX = Arrays.copyOfRange(trainset.getX(), devLength, length);
             double[][] trainingSetY = Arrays.copyOfRange(trainset.getY(), devLength, length);
-
             Dataset devset = new Dataset(devSetX, devSetY);
             trainset = new Dataset(trainingSetX, trainingSetY);
 
