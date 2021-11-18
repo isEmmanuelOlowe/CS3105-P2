@@ -74,9 +74,7 @@ public class ANN {
 		if (this.model == null) {
 			throw new Exception("ANN model must be built first");
 		}
-		System.out.println("Minibatch Size: " + batchsize);
-		System.out.println("Epochs Size: " + nEpochs);
-		System.out.println("Training...");
+
 		int notAtPeak = 0; // the number of times not at peak
 		double peakAcc = -1; // the best accuracy of the previous epochs
 		double totalLoss = 0; // the total loss of the current epoch
@@ -92,8 +90,6 @@ public class ANN {
 
 				optimizer.resetGradients(); // always reset the gradients before performing backward
 
-				System.out.println("X Length :" + batch.first.length);
-				System.out.println("Y Length :" + batch.second.length);
 				// calculate the loss value
 				DoubleMatrix probs = model.forward(batch.first);
 				double lossVal = loss.forward(batch.second, probs);

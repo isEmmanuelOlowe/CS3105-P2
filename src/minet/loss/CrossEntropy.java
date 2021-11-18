@@ -36,8 +36,6 @@ public class CrossEntropy implements Loss {
         }
 
         double lossVal = 0;
-        System.out.println("lables length?: " + labels.length);
-        System.out.println("YHAT length?: " + Yhat.length);
         for (int i = 0; i < labels.length; i++) {
             System.out.println("i: " + i);
             System.out.println(Arrays.toString(labels));

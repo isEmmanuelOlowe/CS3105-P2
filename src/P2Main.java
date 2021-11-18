@@ -142,8 +142,9 @@ public class P2Main {
             System.out.println("Dimension Dev Set Size: " + devset.getSize());
             // build and train an ANN with the given data and parameters
 
+            int OUTPUT_DIMENSIONS = 3;
             // building the network
-            Layer network = ann.build(trainset.getInputDims(), trainset.getOutDims(), hiddenLayers, hiddenLayerNodes,
+            Layer network = ann.build(trainset.getInputDims(), OUTPUT_DIMENSIONS, hiddenLayers, hiddenLayerNodes,
                     activationFunction);
             Loss crossEntropy = new CrossEntropy();
             Optimizer sGradientDescent = new SGD(network, learningRate);
