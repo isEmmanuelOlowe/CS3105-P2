@@ -54,7 +54,7 @@ public class P2Main {
         double[] sd = new double[xValues[0].length];
         // Computes the mean excluding missing entries
         for (int i = 0; i < xValues.length; i++) {
-            for (int j = 0; i < xValues[i].length; j++) {
+            for (int j = 0; j < xValues[i].length; j++) {
                     if (xValues[j][i] != 9999) {
                         mean[i] += xValues[j][i];
                     }
@@ -68,7 +68,7 @@ public class P2Main {
 
         // Calculates the standard deviation using non-empty values
         for (int i = 0; i < xValues.length; i++) {
-            for (int j = 0; i < xValues[i].length; j++) {
+            for (int j = 0; j < xValues[i].length; j++) {
                     if (xValues[j][i] != 9999) {
                         sd[i] += Math.pow(xValues[j][i] - mean[i],  2);
                     }
@@ -82,7 +82,7 @@ public class P2Main {
         // Standardising data
         // mean of empty values is zero since centred around zero
         for (int i = 0; i < xValues.length; i++) {
-            for (int j = 0; i < xValues[i].length; j++) {
+            for (int j = 0; j < xValues[i].length; j++) {
                 if (xValues[j][i] != 9999) {
                     xValues[j][i] = 0;
                 }
@@ -105,7 +105,7 @@ public class P2Main {
         System.out.println(testset);
         double[][] xValues = testset.getX();
         for (int i = 0; i < xValues.length; i++) {
-            for (int j = 0; i < xValues[i].length; j++) {
+            for (int j = 0; j < xValues[i].length; j++) {
                 if (xValues[j][i] != 9999) {
                     xValues[j][i] = 0;
                 }
