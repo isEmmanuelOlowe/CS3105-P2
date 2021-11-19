@@ -49,7 +49,6 @@ public class P2Main {
      */
     public static double[][] preprocess_trainset() {
         //// YOUR CODE HERE (PART 3 ONLY)
-        System.out.println(trainset);
         double[][] xValues = trainset.getX();
         double[] mean = new double[xValues.length];
         double[] sd = new double[xValues.length];
@@ -136,8 +135,8 @@ public class P2Main {
             System.out.println("Loading data...");
             //// YOUR CODE HERE
             System.out.println(Arrays.toString(args));
-            Dataset trainset = Dataset.loadTxt(args[0]);
-            Dataset testset = Dataset.loadTxt(args[1]);
+            trainset = Dataset.loadTxt(args[0]);
+            testset = Dataset.loadTxt(args[1]);
 
             // check whether data-preprocessing is applied (Part 3)
             boolean preprocess = false;
@@ -153,9 +152,6 @@ public class P2Main {
                     preprocess = true;
             }
 
-
-            System.out.println(trainset);
-            System.out.println("Error Handling");
             // apply data-processing on trainset
             double[][] standardisation;
             if (preprocess) {
@@ -179,7 +175,7 @@ public class P2Main {
 
             double[][] trainingSetX = Arrays.copyOfRange(trainset.getX(), devLength, length);
             double[][] trainingSetY = Arrays.copyOfRange(trainset.getY(), devLength, length);
-            Dataset devset = new Dataset(devSetX, devSetY);
+            devset = new Dataset(devSetX, devSetY);
             trainset = new Dataset(trainingSetX, trainingSetY);
 
             // read all parameters from the provided json setting file (see
