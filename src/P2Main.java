@@ -56,7 +56,7 @@ public class P2Main {
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; i < xValues[i].length; j++) {
                     if (xValues[j][i] != 9999) {
-                        mean[j] += xValues[j][i];
+                        mean[i] += xValues[j][i];
                     }
             }
         }
@@ -70,7 +70,7 @@ public class P2Main {
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; i < xValues[i].length; j++) {
                     if (xValues[j][i] != 9999) {
-                        sd[j] += Math.pow(xValues[j][i] - mean[j],  2);
+                        sd[i] += Math.pow(xValues[j][i] - mean[i],  2);
                     }
             }
         }
@@ -87,7 +87,7 @@ public class P2Main {
                     xValues[j][i] = 0;
                 }
                 else {
-                    xValues[j][i] = (xValues[j][i] - mean[j]) / sd[j];
+                    xValues[j][i] = (xValues[j][i] - mean[i]) / sd[i];
                 }
             }
         }
@@ -110,7 +110,7 @@ public class P2Main {
                     xValues[j][i] = 0;
                 }
                 else {
-                    xValues[j][i] = (xValues[j][i] - standardisations[0][j]) / standardisations[1][j];
+                    xValues[j][i] = (xValues[j][i] - standardisations[0][i]) / standardisations[1][i];
                 }
             }
         }
