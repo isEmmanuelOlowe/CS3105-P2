@@ -55,8 +55,8 @@ public class P2Main {
         // Computes the mean excluding missing entries
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; j < xValues[i].length; j++) {
-                    if (xValues[j][i] != 9999) {
-                        mean[i] += xValues[j][i];
+                    if (xValues[i][j] != 9999) {
+                        mean[i] += xValues[i][j];
                     }
             }
         }
@@ -70,7 +70,7 @@ public class P2Main {
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; j < xValues[i].length; j++) {
                     if (xValues[j][i] != 9999) {
-                        sd[i] += Math.pow(xValues[j][i] - mean[i],  2);
+                        sd[i] += Math.pow(xValues[i][j] - mean[i],  2);
                     }
             }
         }
@@ -83,11 +83,11 @@ public class P2Main {
         // mean of empty values is zero since centred around zero
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; j < xValues[i].length; j++) {
-                if (xValues[j][i] != 9999) {
-                    xValues[j][i] = 0;
+                if (xValues[i][j] == 9999) {
+                    xValues[i][j] = 0;
                 }
                 else {
-                    xValues[j][i] = (xValues[j][i] - mean[i]) / sd[i];
+                    xValues[i][j] = (xValues[i][j] - mean[i]) / sd[i];
                 }
             }
         }
@@ -106,11 +106,11 @@ public class P2Main {
         double[][] xValues = testset.getX();
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; j < xValues[i].length; j++) {
-                if (xValues[j][i] != 9999) {
-                    xValues[j][i] = 0;
+                if (xValues[i][j] == 9999) {
+                    xValues[i][j] = 0;
                 }
                 else {
-                    xValues[j][i] = (xValues[j][i] - standardisations[0][i]) / standardisations[1][i];
+                    xValues[i][j] = (xValues[i][j] - standardisations[0][i]) / standardisations[1][i];
                 }
             }
         }
