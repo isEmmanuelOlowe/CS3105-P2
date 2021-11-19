@@ -76,7 +76,7 @@ public class P2Main {
         }
         // adjusting standard deviation
         for (int i = 0; i < sd.length; i++) {
-            sd[i] = Math.pow(sd[i], 2) / xValues[0].length - 1;
+            sd[i] = sd[i] / xValues.length - 1;
         }
 
         // Standardising data
