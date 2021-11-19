@@ -42,7 +42,7 @@ public class P2Main {
         System.out.println("Example 2: build an ANN for Part3 (preprocessing is not applied)");
         System.out.println(
                 "\tjava -cp lib/jblas-1.2.5.jar:minet:. data/Part3/train.txt data/Part3/test.txt 123 settings/example.json");
-`
+
     /**
      * apply data preprocessing (imputation of missing values and standardisation)
      * on trainset (Part 3 only)
