@@ -42,22 +42,77 @@ public class P2Main {
         System.out.println("Example 2: build an ANN for Part3 (preprocessing is not applied)");
         System.out.println(
                 "\tjava -cp lib/jblas-1.2.5.jar:minet:. data/Part3/train.txt data/Part3/test.txt 123 settings/example.json");
-    }
-
+`
     /**
      * apply data preprocessing (imputation of missing values and standardisation)
      * on trainset (Part 3 only)
      */
-    public static void preprocess_trainset() {
+    public static double[][] preprocess_trainset() {
         //// YOUR CODE HERE (PART 3 ONLY)
+        double[][] xValues = trainset.getX();
+        double[] mean = new double[xValues.length];
+        double[] sd = new double[xValues.length];
+        // Computes the mean excluding missing entries
+        for (int i = 0; i < xValues.length; i++) {
+            for (int j = 0; i < xValues[i].length; j++) {
+                    if (xValues[i][j] != 9999) {
+                        mean[i] += xValues[i][j];
+                    }
+            }
+        }
+
+        // subdivides the means
+        for (int i = 0; i < mean.length; i++) {
+            mean[i] /= xValues[0].length;
+        }
+
+        // Calculates the standard deviation using non-empty values
+        for (int i = 0; i < xValues.length; i++) {
+            for (int j = 0; i < xValues[i].length; j++) {
+                    if (xValues[i][j] != 9999) {
+                        sd[i] += Math.pow(xValues[i][j] - mean[i],  2);
+                    }
+            }
+        }
+        // adjusting standard deviation
+        for (int i = 0; i < sd.length; i++) {
+            sd[i] = Math.pow(sd[i], xValues[0].length - 1);
+        }
+
+        // Standardising data
+        // mean of empty values is zero since centred around zero
+        for (int i = 0; i < xValues.length; i++) {
+            for (int j = 0; i < xValues[i].length; j++) {
+                if (xValues[i][j] != 9999) {
+                    xValues[i][j] = 0;
+                }
+                else {
+                    xValues[i][j] = (xValues[i][j] - mean[i]) / sd[i];
+                }
+            }
+        }
+        trainset = new Dataset(xValues, trainset.getY());
     }
 
     /**
      * apply data preprocessing (imputation of missing values and standardisation)
      * on testset (Part 3 only)
      */
-    public static void preprocess_testset() {
+    public static void preprocess_testset(double[][] standardisations) {
         //// YOUR CODE HERE (PART 3 ONLY)
+        double[][] xValues = testset.getX();
+        for (int i = 0; i < xValues.length; i++) {
+            for (int j = 0; i < xValues[i].length; j++) {
+                if (xValues[i][j] != 9999) {
+                    xValues[i][j] = 0;
+                }
+                else {
+                    xValues[i][j] = (xValues[i][j] - standardisations[0][i]) / standardisations[1][i];
+                }
+            }
+        }
+
+        testset = new Dataset(xValues, testset.getY());
     }
 
     public static void main(String[] args) {
@@ -95,8 +150,9 @@ public class P2Main {
             }
 
             // apply data-processing on trainset
+            double[][] standardisation;
             if (preprocess)
-                preprocess_trainset();
+                standardisation = preprocess_trainset();
 
             // split train set into train set (trainset) and validation set, also called
             // development set (devset)
@@ -154,7 +210,7 @@ public class P2Main {
             try {
                 // apply data-preprocessing on testset
                 if (preprocess)
-                    preprocess_testset();
+                    preprocess_testset(standardisation);
                 double testAcc = ann.eval(testset);
                 System.out.println("accuracy on test set: " + testAcc);
             } catch (Exception e) {
