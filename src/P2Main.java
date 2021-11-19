@@ -153,6 +153,9 @@ public class P2Main {
                     preprocess = true;
             }
 
+
+            System.out.println(trainset);
+            System.out.println("Error Handling");
             // apply data-processing on trainset
             double[][] standardisation;
             if (preprocess) {
