@@ -69,7 +69,7 @@ public class P2Main {
         // Calculates the standard deviation using non-empty values
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; j < xValues[i].length; j++) {
-                    if (xValues[i][j] != 9999) {
+                    if (xValues[i][j] != 99999) {
                         sd[j] += Math.pow(xValues[i][j] - mean[j],  2);
                     }
             }
@@ -83,7 +83,7 @@ public class P2Main {
         // mean of empty values is zero since centred around zero
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; j < xValues[i].length; j++) {
-                if (xValues[i][j] == 9999) {
+                if (xValues[i][j] == 99999) {
                     xValues[i][j] = 0;
                 }
                 else {
@@ -106,7 +106,7 @@ public class P2Main {
         double[][] xValues = testset.getX();
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; j < xValues[i].length; j++) {
-                if (xValues[i][j] == 9999) {
+                if (xValues[i][j] == 99999) {
                     xValues[i][j] = 0;
                 }
                 else {
