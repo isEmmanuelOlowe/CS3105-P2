@@ -28,7 +28,7 @@ public class P2Main {
     static Dataset trainset;
     static Dataset devset;
     static Dataset testset;
-    
+
     public static void printUsage() {
         System.out.println("Input not recognised. Usage is:");
         System.out.println(
@@ -49,6 +49,7 @@ public class P2Main {
      */
     public static double[][] preprocess_trainset() {
         //// YOUR CODE HERE (PART 3 ONLY)
+        System.out.println(trainset);
         double[][] xValues = trainset.getX();
         double[] mean = new double[xValues.length];
         double[] sd = new double[xValues.length];
@@ -102,6 +103,7 @@ public class P2Main {
      */
     public static void preprocess_testset(double[][] standardisations) {
         //// YOUR CODE HERE (PART 3 ONLY)
+        System.out.println(testset);
         double[][] xValues = testset.getX();
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; i < xValues[i].length; j++) {
