@@ -50,27 +50,27 @@ public class P2Main {
     public static double[][] preprocess_trainset() {
         //// YOUR CODE HERE (PART 3 ONLY)
         double[][] xValues = trainset.getX();
-        double[] mean = new double[xValues.length];
-        double[] sd = new double[xValues.length];
+        double[] mean = new double[xValues[0].length];
+        double[] sd = new double[xValues[0].length];
         // Computes the mean excluding missing entries
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; i < xValues[i].length; j++) {
-                    if (xValues[i][j] != 9999) {
-                        mean[i] += xValues[i][j];
+                    if (xValues[j][i] != 9999) {
+                        mean[j] += xValues[j][i];
                     }
             }
         }
 
         // subdivides the means
         for (int i = 0; i < mean.length; i++) {
-            mean[i] /= xValues[0].length;
+            mean[i] /= xValues.length;
         }
 
         // Calculates the standard deviation using non-empty values
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; i < xValues[i].length; j++) {
-                    if (xValues[i][j] != 9999) {
-                        sd[i] += Math.pow(xValues[i][j] - mean[i],  2);
+                    if (xValues[j][i] != 9999) {
+                        sd[j] += Math.pow(xValues[j][i] - mean[j],  2);
                     }
             }
         }
@@ -83,11 +83,11 @@ public class P2Main {
         // mean of empty values is zero since centred around zero
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; i < xValues[i].length; j++) {
-                if (xValues[i][j] != 9999) {
-                    xValues[i][j] = 0;
+                if (xValues[j][i] != 9999) {
+                    xValues[j][i] = 0;
                 }
                 else {
-                    xValues[i][j] = (xValues[i][j] - mean[i]) / sd[i];
+                    xValues[j][i] = (xValues[j][i] - mean[j]) / sd[j];
                 }
             }
         }
@@ -106,11 +106,11 @@ public class P2Main {
         double[][] xValues = testset.getX();
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; i < xValues[i].length; j++) {
-                if (xValues[i][j] != 9999) {
-                    xValues[i][j] = 0;
+                if (xValues[j][i] != 9999) {
+                    xValues[j][i] = 0;
                 }
                 else {
-                    xValues[i][j] = (xValues[i][j] - standardisations[0][i]) / standardisations[1][i];
+                    xValues[j][i] = (xValues[j][i] - standardisations[0][j]) / standardisations[1][j];
                 }
             }
         }
