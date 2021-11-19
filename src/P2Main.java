@@ -28,7 +28,7 @@ public class P2Main {
     static Dataset trainset;
     static Dataset devset;
     static Dataset testset;
-
+    
     public static void printUsage() {
         System.out.println("Input not recognised. Usage is:");
         System.out.println(
@@ -153,8 +153,13 @@ public class P2Main {
 
             // apply data-processing on trainset
             double[][] standardisation;
-            if (preprocess)
+            if (preprocess) {
                 standardisation = preprocess_trainset();
+            }
+            // to get the compiler to leave me alone!
+            else {
+                standardisation = new double[0][0];
+            }
 
             // split train set into train set (trainset) and validation set, also called
             // development set (devset)
