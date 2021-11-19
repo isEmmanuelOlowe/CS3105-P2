@@ -55,7 +55,7 @@ public class P2Main {
         // Computes the mean excluding missing entries
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; j < xValues[i].length; j++) {
-                    if (xValues[i][j] != 9999) {
+                    if (xValues[i][j] != 99999) {
                         mean[j] += xValues[i][j];
                     }
             }
@@ -76,7 +76,7 @@ public class P2Main {
         }
         // adjusting standard deviation
         for (int i = 0; i < sd.length; i++) {
-            sd[i] = sd[i] / xValues.length - 1;
+            sd[i] /= xValues.length - 1;
         }
 
         // Standardising data
