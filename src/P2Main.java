@@ -69,7 +69,7 @@ public class P2Main {
         // Calculates the standard deviation using non-empty values
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; j < xValues[i].length; j++) {
-                    if (xValues[j][i] != 9999) {
+                    if (xValues[i][j] != 9999) {
                         sd[j] += Math.pow(xValues[i][j] - mean[j],  2);
                     }
             }
