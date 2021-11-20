@@ -119,15 +119,15 @@ public class P2Main {
         Dataset experimentset = new Dataset(exSetX, exSetY);
         trainset = new Dataset(trainingSetX, trainingSetY);
         // Search Space for Hidden Layers
-        int MAX_HIDDEN_LAYERS = 5;
+        int MAX_HIDDEN_LAYERS = 3;
         // Search Spaces for Nodes Per Hidden Layer
-        int MAX_HIDDEN_LAYER_NODES = 22;
+        int MAX_HIDDEN_LAYER_NODES = 40;
         // Search Space for Activation Function
         String[] activationFunction = {"ReLU", "Sigmoid", "Tanh", "Softmax"};
         // Will hold the various learning rates use form 0.1 to 1 (search space)
         double learningRate;
         // The maximum increments of learning rate by 0.01
-        double MAX_INCREMENT = 8;
+        double MAX_INCREMENT = 4;
         // output dimensions
         int OUTPUT_DIMS = 3;
         // default values
@@ -140,9 +140,9 @@ public class P2Main {
 
         ANN ann = new ANN();
         for (int i = 1; i < MAX_HIDDEN_LAYERS; i++) {
-            for (int j = 17; j < MAX_HIDDEN_LAYER_NODES; j++) {
+            for (int j = 22; j < MAX_HIDDEN_LAYER_NODES; j++) {
                 // resonable starting value
-                learningRate = 0.9;
+                learningRate = 1;
                 for (int k = 0; k < activationFunction.length; k++) {
                     for (int l = 0; l < MAX_INCREMENT; l++) {
                         learningRate += 0.05;
