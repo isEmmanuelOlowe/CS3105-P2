@@ -103,9 +103,12 @@ public class P2Main {
      * apply data preprocessing (imputation of missing values and standardisation)
      * on trainset (Part 3 only)
      */
-
+    
     public static void randomHyperParameters(Random rnd) throws Exception{
         // So data is not contained with results from test set
+        double[][] standard = preprocess_trainset();
+        preprocess_testset(standard, devset);
+        // extracts new devset for experiment
         int length = trainset.getSize();
         int devLength = (int) Math.floor(length * 0.2);
         double[][] exSetX = Arrays.copyOfRange(trainset.getX(), 1, devLength);
@@ -115,8 +118,6 @@ public class P2Main {
         double[][] trainingSetY = Arrays.copyOfRange(trainset.getY(), devLength, length);
         Dataset experimentset = new Dataset(exSetX, exSetY);
         trainset = new Dataset(trainingSetX, trainingSetY);
-        double[][] standard = preprocess_trainset();
-        preprocess_testset(standard, experimentset);
         // Search Space for Hidden Layers
         int MAX_HIDDEN_LAYERS = 10;
         // Search Spaces for Nodes Per Hidden Layer
