@@ -151,11 +151,11 @@ public class ANN {
 
 		for (int i = 1; i < 2 * n_hidden_layers; i += 2) {
 			// Selects the activation Function
-			if (activation_function == "Softmax") {
+			if (activation_function.equals("Softmax")) {
 				modelLayers[i] = new Softmax();
-			} else if (activation_function == "Tanh") {
+			} else if (activation_function.equals("Tanh")) {
 				modelLayers[i] = new Tanh();
-			} else if (activation_function == "Sigmoid") {
+			} else if (activation_function.equals("Sigmoid")) {
 				modelLayers[i] = new Sigmoid();
 			} else {
 				modelLayers[i] = new ReLU();

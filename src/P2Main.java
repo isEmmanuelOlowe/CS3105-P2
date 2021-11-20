@@ -110,7 +110,7 @@ public class P2Main {
         // Search Spaces for Nodes Per Hidden Layer
         int[] hiddenLayerNodes = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
         // Search Space for Activation Function
-        String[] activationFunction = {"ReLU", "Sigmoid", "Tanh"};
+        String[] activationFunction = {"ReLU", "Sigmoid", "Tanh", "Softmax"};
         // Will hold the various learning rates use form 0.01 to 1 (search space)
         double learningRate;
         // The maximum increments of learning rate by 0.01
