@@ -282,7 +282,7 @@ public class P2Main {
 
             // check whether data-preprocessing is applied (Part 3)
             boolean preprocess = false;
-            if (args.length == 5) {
+            if (args.length >= 5) {
                 if (!args[4].equals("0") && !args[4].equals("1")) {
                     System.out.println("HERE" + args[4]);
                     printUsage();
