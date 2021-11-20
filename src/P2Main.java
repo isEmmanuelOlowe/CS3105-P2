@@ -142,10 +142,10 @@ public class P2Main {
         for (int i = 1; i < MAX_HIDDEN_LAYERS; i++) {
             for (int j = 17; j < MAX_HIDDEN_LAYER_NODES; j++) {
                 // resonable starting value
-                learningRate = 0.7;
+                learningRate = 0.9;
                 for (int k = 0; k < activationFunction.length; k++) {
                     for (int l = 0; l < MAX_INCREMENT; l++) {
-                        learningRate += 0.1;
+                        learningRate += 0.05;
                         Layer network = ann.build(trainset.getInputDims(), OUTPUT_DIMS, i, j, activationFunction[k]);
                         Loss crossEntropy = new CrossEntropy();
                         Optimizer sGradientDescent = new SGD(network, learningRate);
@@ -161,7 +161,7 @@ public class P2Main {
     }
     
     public static void print_results(TreeMap<String, Double> data) throws Exception {
-        FileWriter myWriter = new FileWriter("hyperparameters.csv");
+        FileWriter myWriter = new FileWriter("data/experiments/hyperparameters.csv");
         myWriter.write("Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy");
         for (String key : data.keySet()) {
             myWriter.write(key + "," + data.get(key) + "\n");
