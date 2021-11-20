@@ -106,15 +106,15 @@ public class P2Main {
 
     public static void randomHyperParameters(Random rnd) throws Exception{
         // Search Space for Hidden Layers
-        int[] hiddenLayers = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+        int MAX_HIDDEN_LAYERS = 10;
         // Search Spaces for Nodes Per Hidden Layer
-        int[] hiddenLayerNodes = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+        int MAX_HIDDEN_LAYER_NODES = 25;
         // Search Space for Activation Function
         String[] activationFunction = {"ReLU", "Sigmoid", "Tanh", "Softmax"};
         // Will hold the various learning rates use form 0.1 to 1 (search space)
         double learningRate;
         // The maximum increments of learning rate by 0.01
-        double MAX_INCREMENT = 60;
+        double MAX_INCREMENT = 5;
         // output dimensions
         int OUTPUT_DIMS = 3;
         // default values
@@ -126,19 +126,19 @@ public class P2Main {
         TreeMap<String, Double> data = new TreeMap<String, Double>();
 
         ANN ann = new ANN();
-        for (int i = 1; i < hiddenLayers.length; i++) {
-            for (int j = 10; j < hiddenLayerNodes.length; j++) {
+        for (int i = 1; i < MAX_HIDDEN_LAYERS; i++) {
+            for (int j = 10; j < MAX_HIDDEN_LAYER_NODES; j++) {
                 // resonable starting value
-                learningRate = 0.4;
+                learningRate = 0.2;
                 for (int k = 0; k < activationFunction.length; k++) {
                     for (int l = 0; l < MAX_INCREMENT; l++) {
-                        learningRate += 0.01;
-                        Layer network = ann.build(trainset.getInputDims(), OUTPUT_DIMS, hiddenLayers[i], hiddenLayerNodes[j], activationFunction[k]);
+                        learningRate += 0.1;
+                        Layer network = ann.build(trainset.getInputDims(), OUTPUT_DIMS, i, j, activationFunction[k]);
                         Loss crossEntropy = new CrossEntropy();
                         Optimizer sGradientDescent = new SGD(network, learningRate);
                         ann.train(crossEntropy, sGradientDescent, trainset, devset, batchSize, epochs, patience, rnd);
                         double testAcc = ann.eval(testset);
-                        data.put(hiddenLayers[i]+","+hiddenLayerNodes[j]+","+activationFunction[k]+","+learningRate,testAcc);
+                        data.put(i+","+j+","+activationFunction[k]+","+learningRate,testAcc);
                     }
                 }
             }
