@@ -111,10 +111,10 @@ public class P2Main {
         int[] hiddenLayerNodes = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
         // Search Space for Activation Function
         String[] activationFunction = {"ReLU", "Sigmoid", "Tanh", "Softmax"};
-        // Will hold the various learning rates use form 0.01 to 1 (search space)
+        // Will hold the various learning rates use form 0.1 to 1 (search space)
         double learningRate;
         // The maximum increments of learning rate by 0.01
-        double MAX_INCREMENT = 100;
+        double MAX_INCREMENT = 90;
         // output dimensions
         int OUTPUT_DIMS = 3;
         // default values
@@ -129,9 +129,10 @@ public class P2Main {
         preprocess_testset(standardisation);
 
         ANN ann = new ANN();
-        for (int i = 0; i < hiddenLayers.length; i++) {
-            for (int j = 0; j < hiddenLayerNodes.length; j++) {
-                learningRate = 0;
+        for (int i = 1; i < hiddenLayers.length; i++) {
+            for (int j = 1; j < hiddenLayerNodes.length; j++) {
+                // resonable starting value
+                learningRate = 0.1;
                 for (int k = 0; k < activationFunction.length; k++) {
                     for (int l = 0; l < MAX_INCREMENT; l++) {
                         learningRate += 0.01;
