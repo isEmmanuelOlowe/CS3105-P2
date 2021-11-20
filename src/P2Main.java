@@ -43,6 +43,59 @@ public class P2Main {
         System.out.println(
                 "\tjava -cp lib/jblas-1.2.5.jar:minet:. data/Part3/train.txt data/Part3/test.txt 123 settings/example.json");
     }
+
+    // public static void bruteForceCheck(file) {
+    //     int cycles = 0;
+    //     int index = 0;
+    //     int features = trainset.getInputDims();
+    //     int trainLength = trainset.getSize();
+    //     int testLength = testset.getSize();
+    //     double[][] xTrain = trainset.getX();
+    //     double[][] xTest = testset.getX();
+    //     while (cycles < 7) {
+    //         double[][] xTrainFeature = new double[trainLength][features - cycles];
+    //         double[][] xTestFeature = new double[testLength][features - cycles];
+    //         String[][] output = new String[2][27];
+    //         for (int i = 0; i < trainLength; i++) {
+    //             int offset = 0;
+    //             for (int j = cycles; j < features; j++) {
+    //                 if (j == index) {
+    //                     offset++;
+    //                 }
+    //                 else{
+    //                     xTrainFeature[i][j] = xTrain[i][j - offset];
+    //                 }
+    //             }
+    //         }
+
+    //         for (int i = 0; i < testLength; i++) {
+    //             int offset = 0;
+    //             for (int j = cycles; j < features; j++) {
+    //                 if (j == index) {
+    //                     offset++;
+    //                 }
+    //                 else {
+    //                     xTestFeature[i][j] = xTest[i][j - offset];
+    //                 }
+    //             }
+    //         }
+    //         // Making theme defaults
+    //         trainset = new Dataset(xTrainFeature, trainset.getY());
+    //         testset = new Dataset(xTrainFeature, trainset.getY());
+
+    //         double[][] standard = preprocess_trainset();
+    //         preprocess_testset(standard);
+    //         ANN ann = new ANN();
+    //         buildTrainNetwork(ann, file);
+    //         double testAcc = ann.eval(testset);
+    //         output[0][cycles + index] =  "0".repeat(cycles) + "0".repeat(index - cycle)+ "1".repeat(features - cycles - index);
+    //         index++;
+    //         if (index == features){
+    //             cycles++;
+    //             index = cycles;
+    //         }
+    //     }
+    // }
     /**
      * apply data preprocessing (imputation of missing values and standardisation)
      * on trainset (Part 3 only)
@@ -116,8 +169,42 @@ public class P2Main {
         }
 
         testset = new Dataset(xValues, testset.getY());
+        
     }
+    public static void buildTrainNetwork(ANN ann, String file) {
+        JSONParser parser = new JSONParser();
+        int hiddenLayers;
+        int hiddenLayerNodes;
+        String activationFunction;
+        double learningRate;
+        int batchSize;
+        int epochs;
+        int patience;
+        //// YOUR CODE HERE
+        Object obj = parser.parse(new FileReader(file));
+        JSONObject jsonObject = (JSONObject) obj;
+        hiddenLayers = ((Long) jsonObject.get("n_hidden_layers")).intValue();
+        hiddenLayerNodes = ((Long) jsonObject.get("n_nodes_per_hidden_layer")).intValue();
+        activationFunction = (String) jsonObject.get("activation_function");
+        learningRate = ((Double) jsonObject.get("learning_rate")).doubleValue();
+        batchSize = ((Long) jsonObject.get("batchsize")).intValue();
+        epochs = ((Long) jsonObject.get("nEpochs")).intValue();
+        patience = ((Long) jsonObject.get("patience")).intValue();
 
+        System.out.println("Error Logging Prints...");
+        System.out.println("Dimension Test Set Size: " + trainset.getSize());
+        System.out.println("Dimension Dev Set Size: " + devset.getSize());
+        // build and train an ANN with the given data and parameters
+
+        int OUTPUT_DIMENSIONS = 3;
+        // building the network
+        Layer network = ann.build(trainset.getInputDims(), OUTPUT_DIMENSIONS, hiddenLayers, hiddenLayerNodes,
+                activationFunction);
+        Loss crossEntropy = new CrossEntropy();
+        Optimizer sGradientDescent = new SGD(network, learningRate);
+        // training the network
+        ann.train(crossEntropy, sGradientDescent, trainset, devset, batchSize, epochs, patience, rnd);
+    }
     public static void main(String[] args) {
         if (args.length < 4) {
             printUsage();
@@ -181,39 +268,8 @@ public class P2Main {
             // read all parameters from the provided json setting file (see
             // settings/example.json for an example)
             //// YOUR CODE HERE
-            JSONParser parser = new JSONParser();
-            int hiddenLayers;
-            int hiddenLayerNodes;
-            String activationFunction;
-            double learningRate;
-            int batchSize;
-            int epochs;
-            int patience;
             ANN ann = new ANN();
-            //// YOUR CODE HERE
-            Object obj = parser.parse(new FileReader(args[3]));
-            JSONObject jsonObject = (JSONObject) obj;
-            hiddenLayers = ((Long) jsonObject.get("n_hidden_layers")).intValue();
-            hiddenLayerNodes = ((Long) jsonObject.get("n_nodes_per_hidden_layer")).intValue();
-            activationFunction = (String) jsonObject.get("activation_function");
-            learningRate = ((Double) jsonObject.get("learning_rate")).doubleValue();
-            batchSize = ((Long) jsonObject.get("batchsize")).intValue();
-            epochs = ((Long) jsonObject.get("nEpochs")).intValue();
-            patience = ((Long) jsonObject.get("patience")).intValue();
-
-            System.out.println("Error Logging Prints...");
-            System.out.println("Dimension Test Set Size: " + trainset.getSize());
-            System.out.println("Dimension Dev Set Size: " + devset.getSize());
-            // build and train an ANN with the given data and parameters
-
-            int OUTPUT_DIMENSIONS = 3;
-            // building the network
-            Layer network = ann.build(trainset.getInputDims(), OUTPUT_DIMENSIONS, hiddenLayers, hiddenLayerNodes,
-                    activationFunction);
-            Loss crossEntropy = new CrossEntropy();
-            Optimizer sGradientDescent = new SGD(network, learningRate);
-            // training the network
-            ann.train(crossEntropy, sGradientDescent, trainset, devset, batchSize, epochs, patience, rnd);
+            buildTrainNetwork(ann, args[3]);
             // evaluate the trained ANN on the test set and report results
             try {
                 // apply data-preprocessing on testset
