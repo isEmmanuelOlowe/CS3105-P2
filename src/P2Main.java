@@ -171,7 +171,7 @@ public class P2Main {
         testset = new Dataset(xValues, testset.getY());
         
     }
-    public static void buildTrainNetwork(ANN ann, String file, Random rnd) {
+    public static void buildTrainNetwork(ANN ann, String file, Random rnd) throws Exception {
         JSONParser parser = new JSONParser();
         int hiddenLayers;
         int hiddenLayerNodes;
