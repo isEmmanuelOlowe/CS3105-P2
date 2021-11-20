@@ -127,7 +127,7 @@ public class P2Main {
 
         ANN ann = new ANN();
         for (int i = 1; i < MAX_HIDDEN_LAYERS; i++) {
-            for (int j = 10; j < MAX_HIDDEN_LAYER_NODES; j++) {
+            for (int j = 15; j < MAX_HIDDEN_LAYER_NODES; j++) {
                 // resonable starting value
                 learningRate = 0.2;
                 for (int k = 0; k < activationFunction.length; k++) {
