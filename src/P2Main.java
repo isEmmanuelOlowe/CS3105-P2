@@ -321,7 +321,7 @@ public class P2Main {
             devset = new Dataset(devSetX, devSetY);
             trainset = new Dataset(trainingSetX, trainingSetY);
 
-            determine
+            // Determins which experiment is being performed
             if (args.length == 6) {
                 if (args[5] == "1") {
                     randomHyperParameters(rnd);
