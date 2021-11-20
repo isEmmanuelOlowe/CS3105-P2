@@ -324,7 +324,7 @@ public class P2Main {
             // Determins which experiment is being performed
             if (args.length == 6) {
                 System.out.println("ARGS: " + args[5]);
-                if (args[5] == "1") {
+                if (args[5].equals("1")) {
                     randomHyperParameters(rnd);
                 }
                 return;
