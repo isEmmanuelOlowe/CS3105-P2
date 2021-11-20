@@ -105,6 +105,18 @@ public class P2Main {
      */
 
     public static void randomHyperParameters(Random rnd) throws Exception{
+        // So data is not contained with results from test set
+        int length = trainset.getSize();
+        int devLength = (int) Math.floor(length * 0.2);
+        double[][] exSetX = Arrays.copyOfRange(trainset.getX(), 1, devLength);
+        double[][] exSetY = Arrays.copyOfRange(trainset.getY(), 1, devLength);
+
+        double[][] trainingSetX = Arrays.copyOfRange(trainset.getX(), devLength, length);
+        double[][] trainingSetY = Arrays.copyOfRange(trainset.getY(), devLength, length);
+        Dataset experimentset = new Dataset(exSetX, exSetY);
+        trainset = new Dataset(trainingSetX, trainingSetY);
+        double[][] standard = preprocess_trainset();
+        preprocess_testset(standard, experimentset);
         // Search Space for Hidden Layers
         int MAX_HIDDEN_LAYERS = 10;
         // Search Spaces for Nodes Per Hidden Layer
@@ -127,17 +139,18 @@ public class P2Main {
 
         ANN ann = new ANN();
         for (int i = 1; i < MAX_HIDDEN_LAYERS; i++) {
-            for (int j = 15; j < MAX_HIDDEN_LAYER_NODES; j++) {
+            for (int j = 17; j < MAX_HIDDEN_LAYER_NODES; j++) {
                 // resonable starting value
-                learningRate = 0.2;
+                learningRate = 0.4;
                 for (int k = 0; k < activationFunction.length; k++) {
                     for (int l = 0; l < MAX_INCREMENT; l++) {
                         learningRate += 0.1;
                         Layer network = ann.build(trainset.getInputDims(), OUTPUT_DIMS, i, j, activationFunction[k]);
                         Loss crossEntropy = new CrossEntropy();
                         Optimizer sGradientDescent = new SGD(network, learningRate);
-                        ann.train(crossEntropy, sGradientDescent, trainset, devset, batchSize, epochs, patience, rnd);
-                        double testAcc = ann.eval(testset);
+                        ann.train(crossEntropy, sGradientDescent, 
+                                experimentset, devset, batchSize, epochs, patience, rnd);
+                        double testAcc = ann.eval(devset);
                         data.put(i+","+j+","+activationFunction[k]+","+learningRate,testAcc);
                     }
                 }
@@ -208,10 +221,9 @@ public class P2Main {
      * apply data preprocessing (imputation of missing values and standardisation)
      * on testset (Part 3 only)
      */
-    public static void preprocess_testset(double[][] standardisations) {
+    public static void preprocess_testset(double[][] standardisations, Dataset dataset) {
         //// YOUR CODE HERE (PART 3 ONLY)
-        System.out.println(testset);
-        double[][] xValues = testset.getX();
+        double[][] xValues = dataset.getX();
         for (int i = 0; i < xValues.length; i++) {
             for (int j = 0; j < xValues[i].length; j++) {
                 if (xValues[i][j] == 99999) {
@@ -223,7 +235,7 @@ public class P2Main {
             }
         }
 
-        testset = new Dataset(xValues, testset.getY());
+        testset = new Dataset(xValues, dataset.getY());
         
     }
     public static void buildTrainNetwork(ANN ann, String file, Random rnd) throws Exception {
@@ -282,7 +294,7 @@ public class P2Main {
 
             // check whether data-preprocessing is applied (Part 3)
             boolean preprocess = false;
-            if (args.length >= 5) {
+            if (args.length == 5) {
                 if (!args[4].equals("0") && !args[4].equals("1")) {
                     System.out.println("HERE" + args[4]);
                     printUsage();
@@ -297,7 +309,7 @@ public class P2Main {
             // apply data-processing on trainset
             if (preprocess) {
                 double[][] standardisation = preprocess_trainset();
-                preprocess_testset(standardisation);
+                preprocess_testset(standardisation, testset);
             }
 
             // split train set into train set (trainset) and validation set, also called
