@@ -142,7 +142,7 @@ public class P2Main {
         for (int i = 1; i < MAX_HIDDEN_LAYERS; i++) {
             for (int j = 17; j < MAX_HIDDEN_LAYER_NODES; j++) {
                 // resonable starting value
-                learningRate = 0.5;
+                learningRate = 0.7;
                 for (int k = 0; k < activationFunction.length; k++) {
                     for (int l = 0; l < MAX_INCREMENT; l++) {
                         learningRate += 0.1;
