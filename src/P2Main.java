@@ -114,7 +114,7 @@ public class P2Main {
         // Will hold the various learning rates use form 0.1 to 1 (search space)
         double learningRate;
         // The maximum increments of learning rate by 0.01
-        double MAX_INCREMENT = 90;
+        double MAX_INCREMENT = 60;
         // output dimensions
         int OUTPUT_DIMS = 3;
         // default values
@@ -129,10 +129,10 @@ public class P2Main {
         preprocess_testset(standardisation);
 
         ANN ann = new ANN();
-        for (int i = 1; i < hiddenLayers.length; i++) {
-            for (int j = 1; j < hiddenLayerNodes.length; j++) {
+        for (int i = 2; i < hiddenLayers.length; i++) {
+            for (int j = 10; j < hiddenLayerNodes.length; j++) {
                 // resonable starting value
-                learningRate = 0.1;
+                learningRate = 0.4;
                 for (int k = 0; k < activationFunction.length; k++) {
                     for (int l = 0; l < MAX_INCREMENT; l++) {
                         learningRate += 0.01;
@@ -151,6 +151,7 @@ public class P2Main {
     
     public static void print_results(TreeMap<String, Double> data) throws Exception {
         FileWriter myWriter = new FileWriter("hyperparameters.csv");
+        myWriter.write("Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy");
         for (String key : data.keySet()) {
             myWriter.write(key + "," + data.get(key) + "\n");
         }
@@ -297,13 +298,9 @@ public class P2Main {
             }
 
             // apply data-processing on trainset
-            double[][] standardisation;
             if (preprocess) {
-                standardisation = preprocess_trainset();
-            }
-            // to get the compiler to leave me alone!
-            else {
-                standardisation = new double[0][0];
+                double[][] standardisation = preprocess_trainset();
+                preprocess_testset(standardisation);
             }
 
             // split train set into train set (trainset) and validation set, also called
@@ -337,9 +334,6 @@ public class P2Main {
             buildTrainNetwork(ann, args[3], rnd);
             // evaluate the trained ANN on the test set and report results
             try {
-                // apply data-preprocessing on testset
-                if (preprocess)
-                    preprocess_testset(standardisation);
                 double testAcc = ann.eval(testset);
                 System.out.println("accuracy on test set: " + testAcc);
             } catch (Exception e) {
