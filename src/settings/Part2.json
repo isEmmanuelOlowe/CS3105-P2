@@ -1,7 +1,7 @@
 {
     "n_hidden_layers": 2,
     "n_nodes_per_hidden_layer": 30,
-    "activation_function": "Softmax",
+    "activation_function": "Sigmoid",
     "learning_rate": 1.1032,
     "batchsize": 128,
     "nEpochs": 2000,
