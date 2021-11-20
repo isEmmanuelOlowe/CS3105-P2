@@ -171,7 +171,7 @@ public class P2Main {
         testset = new Dataset(xValues, testset.getY());
         
     }
-    public static void buildTrainNetwork(ANN ann, String file) {
+    public static void buildTrainNetwork(ANN ann, String file, Random rnd) {
         JSONParser parser = new JSONParser();
         int hiddenLayers;
         int hiddenLayerNodes;
@@ -269,7 +269,7 @@ public class P2Main {
             // settings/example.json for an example)
             //// YOUR CODE HERE
             ANN ann = new ANN();
-            buildTrainNetwork(ann, args[3]);
+            buildTrainNetwork(ann, args[3], rnd);
             // evaluate the trained ANN on the test set and report results
             try {
                 // apply data-preprocessing on testset
