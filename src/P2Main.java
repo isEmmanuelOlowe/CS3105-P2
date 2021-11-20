@@ -162,7 +162,7 @@ public class P2Main {
     
     public static void print_results(TreeMap<String, Double> data) throws Exception {
         FileWriter myWriter = new FileWriter("data/experiments/hyperparameters.csv");
-        myWriter.write("Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy");
+        myWriter.write("Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy\n");
         for (String key : data.keySet()) {
             myWriter.write(key + "," + data.get(key) + "\n");
         }

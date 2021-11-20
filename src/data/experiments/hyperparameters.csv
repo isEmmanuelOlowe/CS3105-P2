@@ -1,4 +1,5 @@
-Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy1,22,ReLU,1.05,0.5056320400500626
+Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy
+1,22,ReLU,1.05,0.5056320400500626
 1,22,ReLU,1.1,0.5319148936170213
 1,22,ReLU,1.1500000000000001,0.5481852315394243
 1,22,ReLU,1.2000000000000002,0.5168961201501877
