@@ -150,7 +150,7 @@ public class P2Main {
                         Loss crossEntropy = new CrossEntropy();
                         Optimizer sGradientDescent = new SGD(network, learningRate);
                         ann.train(crossEntropy, sGradientDescent, 
-                                experimentset, devset, batchSize, epochs, patience, rnd);
+                                trainset, experimentset, batchSize, epochs, patience, rnd);
                         double testAcc = ann.eval(devset);
                         data.put(i+","+j+","+activationFunction[k]+","+learningRate,testAcc);
                     }
