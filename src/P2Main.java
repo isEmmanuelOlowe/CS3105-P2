@@ -124,12 +124,9 @@ public class P2Main {
 
         //Stores all the data Generated
         TreeMap<String, Double> data = new TreeMap<String, Double>();
-        
-        double[][] standardisation = preprocess_trainset();
-        preprocess_testset(standardisation);
 
         ANN ann = new ANN();
-        for (int i = 2; i < hiddenLayers.length; i++) {
+        for (int i = 1; i < hiddenLayers.length; i++) {
             for (int j = 10; j < hiddenLayerNodes.length; j++) {
                 // resonable starting value
                 learningRate = 0.4;
