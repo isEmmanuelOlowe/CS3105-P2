@@ -12,8 +12,11 @@ import minet.optim.Optimizer;
 import minet.optim.SGD;
 import minet.util.Pair;
 
+import java.util.TreeMap;
+
 // For file import
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -100,6 +103,59 @@ public class P2Main {
      * apply data preprocessing (imputation of missing values and standardisation)
      * on trainset (Part 3 only)
      */
+
+    public static void randomHyperParameters(Random rnd) throws Exception{
+        // Search Space for Hidden Layers
+        int[] hiddenLayers = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+        // Search Spaces for Nodes Per Hidden Layer
+        int[] hiddenLayerNodes = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+        // Search Space for Activation Function
+        String[] activationFunction = {"ReLU", "Sigmoid", "Tanh"};
+        // Will hold the various learning rates use form 0.01 to 1 (search space)
+        double learningRate;
+        // The maximum increments of learning rate by 0.01
+        double MAX_INCREMENT = 100;
+        // output dimensions
+        int OUTPUT_DIMS = 3;
+        // default values
+        int batchSize = 128;
+        int epochs = 2000;
+        int patience = 100;
+
+        //Stores all the data Generated
+        TreeMap<String, Double> data = new TreeMap<String, Double>();
+        
+        double[][] standardisation = preprocess_trainset();
+        preprocess_testset(standardisation);
+
+        ANN ann = new ANN();
+        for (int i = 0; i < hiddenLayers.length; i++) {
+            for (int j = 0; j < hiddenLayerNodes.length; j++) {
+                learningRate = 0;
+                for (int k = 0; k < activationFunction.length; k++) {
+                    for (int l = 0; l < MAX_INCREMENT; l++) {
+                        learningRate += 0.01;
+                        Layer network = ann.build(trainset.getInputDims(), OUTPUT_DIMS, hiddenLayers[i], hiddenLayerNodes[j], activationFunction[k]);
+                        Loss crossEntropy = new CrossEntropy();
+                        Optimizer sGradientDescent = new SGD(network, learningRate);
+                        ann.train(crossEntropy, sGradientDescent, trainset, devset, batchSize, epochs, patience, rnd);
+                        double testAcc = ann.eval(testset);
+                        data.put(hiddenLayers[i]+","+hiddenLayerNodes[j]+","+activationFunction[k]+","+learningRate,testAcc);
+                    }
+                }
+            }
+        }
+        print_results(data);
+    }
+    
+    public static void print_results(TreeMap<String, Double> data) throws Exception {
+        FileWriter myWriter = new FileWriter("hyperparameters.csv");
+        for (String key : data.keySet()) {
+            myWriter.write(key + "," + data.get(key) + "\n");
+        }
+        myWriter.close();
+    }
+    
     public static double[][] preprocess_trainset() {
         //// YOUR CODE HERE (PART 3 ONLY)
         double[][] xValues = trainset.getX();
@@ -265,6 +321,13 @@ public class P2Main {
             devset = new Dataset(devSetX, devSetY);
             trainset = new Dataset(trainingSetX, trainingSetY);
 
+            determine
+            if (args.length == 6) {
+                if (args[5] == "1") {
+                    randomHyperParameters(rnd);
+                }
+                return;
+            }
             // read all parameters from the provided json setting file (see
             // settings/example.json for an example)
             //// YOUR CODE HERE
