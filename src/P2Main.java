@@ -74,7 +74,7 @@ public class P2Main {
 
         TreeMap<String, Double> data = new TreeMap<String, Double>();
         testFeaures(trainset, experimentset, devset, FEATURES, rnd, data, file);
-        print_results(data, "Features in Use", "data/features.csv");
+        print_results(data, "Features in Use, accuracy", "data/features/features.csv");
         
     }
 
@@ -209,8 +209,7 @@ public class P2Main {
                 }
             }
         }
-        print_results(data, 
-                "Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy", "data/experiments/hyperparameters.csv");
+        print_results(data, "Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy", "data/experiments/hyperparameters.csv");
     }
     
     /**
