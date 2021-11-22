@@ -126,6 +126,7 @@ public class P2Main {
                 }
                 else {
                     offset++;
+                    newX[i][j] = x[i][j + offset];
                 }
             }
         }
@@ -147,6 +148,7 @@ public class P2Main {
             }
             else {
                 offset++;
+                newArray[i] = array[i + offset];
             }
         }
         return newArray;
@@ -214,7 +216,7 @@ public class P2Main {
             }
         }
         print_results(data, 
-                "Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy\n", "data/experiments/hyperparameters.csv");
+                "Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy", "data/experiments/hyperparameters.csv");
     }
     
     /**
@@ -224,7 +226,7 @@ public class P2Main {
      */
     public static void print_results(TreeMap<String, Double> data, String head, String filePath) throws Exception {
         FileWriter myWriter = new FileWriter(filePath);
-        myWriter.write(head);
+        myWriter.write(head + "\n");
         for (String key : data.keySet()) {
             myWriter.write(key + "," + data.get(key) + "\n");
         }
