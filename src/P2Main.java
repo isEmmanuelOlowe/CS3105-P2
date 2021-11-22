@@ -117,9 +117,9 @@ public class P2Main {
         double[][] newX = new double[dataset.getSize()][dataset.getInputDims() - 1];
         for (int i = 0; i < dataset.getSize(); i++) {
             int offset = 0;
-            for (int j = 0; j < dataset.getInputDims(); j++) {
+            for (int j = 0; j < dataset.getInputDims() - 1; j++) {
                 if (j != index) {
-                    newX[i][j] = x[i][j - offset];
+                    newX[i][j] = x[i][j + offset];
                 }
                 else {
                     offset++;
@@ -136,11 +136,11 @@ public class P2Main {
      * @return a new array without the removed index
      */
     public static String[] removeIndex(String[] array, int index) {
-        String[] newArray = new String[array.length];
-        for (int i = 0; i < array.length; i++) {
+        String[] newArray = new String[array.length - 1];
+        for (int i = 0; i < newArray.length; i++) {
             int offset = 0;
             if (i != index) {
-                newArray[i] = array[i - offset];
+                newArray[i] = array[i + offset];
             }
             else {
                 offset++;
