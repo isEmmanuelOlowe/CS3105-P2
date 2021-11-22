@@ -89,18 +89,21 @@ public class P2Main {
      * @throws Exception
      */
     public static void testFeaures(Dataset trainset, Dataset devset, Dataset testset, String[] features, Random rnd, TreeMap<String, Double> data, String file) throws Exception {
-        // Run neural network add output to 
-        ANN ann = new ANN();
-        buildTrainNetwork(ann, file, rnd, trainset, devset);
-        double eval = ann.eval(testset);
-        data.put(Arrays.toString(features).replaceAll(",", ""), eval);
-        if (features.length > 1) {
-            for (int i = 0; i < features.length; i++) {
-                Dataset newTrainset = extract(trainset, i);
-                Dataset newDevset = extract(devset, i);
-                Dataset newTestset = extract(testset, i);
-                String[] newFeatures = removeIndex(features, i);
-                testFeaures(newTrainset, newDevset, newTestset, newFeatures, rnd, data, file);
+        // Run neural network add output to
+        // Ignores values which have already been computed befores
+        if (!data.containsKey(Arrays.toString(features).replaceAll(",", ""))) {
+            ANN ann = new ANN();
+            buildTrainNetwork(ann, file, rnd, trainset, devset);
+            double eval = ann.eval(testset);
+            data.put(Arrays.toString(features).replaceAll(",", ""), eval);
+            if (features.length > 1) {
+                for (int i = 0; i < features.length; i++) {
+                    Dataset newTrainset = extract(trainset, i);
+                    Dataset newDevset = extract(devset, i);
+                    Dataset newTestset = extract(testset, i);
+                    String[] newFeatures = removeIndex(features, i);
+                    testFeaures(newTrainset, newDevset, newTestset, newFeatures, rnd, data, file);
+                }
             }
         }
 
