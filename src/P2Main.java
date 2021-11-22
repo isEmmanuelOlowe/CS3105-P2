@@ -13,7 +13,8 @@ import minet.optim.SGD;
 import minet.util.Pair;
 
 import java.util.TreeMap;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 // For file import
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -47,63 +48,115 @@ public class P2Main {
                 "\tjava -cp lib/jblas-1.2.5.jar:minet:. data/Part3/train.txt data/Part3/test.txt 123 settings/example.json");
     }
 
-    // public static void bruteForceCheck(file) {
-    //     int cycles = 0;
-    //     int index = 0;
-    //     int features = trainset.getInputDims();
-    //     int trainLength = trainset.getSize();
-    //     int testLength = testset.getSize();
-    //     double[][] xTrain = trainset.getX();
-    //     double[][] xTest = testset.getX();
-    //     while (cycles < 7) {
-    //         double[][] xTrainFeature = new double[trainLength][features - cycles];
-    //         double[][] xTestFeature = new double[testLength][features - cycles];
-    //         String[][] output = new String[2][27];
-    //         for (int i = 0; i < trainLength; i++) {
-    //             int offset = 0;
-    //             for (int j = cycles; j < features; j++) {
-    //                 if (j == index) {
-    //                     offset++;
-    //                 }
-    //                 else{
-    //                     xTrainFeature[i][j] = xTrain[i][j - offset];
-    //                 }
-    //             }
-    //         }
 
-    //         for (int i = 0; i < testLength; i++) {
-    //             int offset = 0;
-    //             for (int j = cycles; j < features; j++) {
-    //                 if (j == index) {
-    //                     offset++;
-    //                 }
-    //                 else {
-    //                     xTestFeature[i][j] = xTest[i][j - offset];
-    //                 }
-    //             }
-    //         }
-    //         // Making theme defaults
-    //         trainset = new Dataset(xTrainFeature, trainset.getY());
-    //         testset = new Dataset(xTrainFeature, trainset.getY());
+    /**
+     * A experiment to determine which combination of features results in the highest evaulation
+     * 
+     * @param rnd for reproducibility
+     * @throws Exception an exceptions thrown
+     */
+    public static void featureImportance(Random rnd, String file) throws Exception {
+        // So data is not contained with results from test set
+        double[][] standard = preprocess_trainset();
+        preprocess_testset(standard, devset);
+        // extracts new devset for experiment
+        int length = trainset.getSize();
+        int devLength = (int) Math.floor(length * 0.2);
+        double[][] exSetX = Arrays.copyOfRange(trainset.getX(), 1, devLength);
+        double[][] exSetY = Arrays.copyOfRange(trainset.getY(), 1, devLength);
 
-    //         double[][] standard = preprocess_trainset();
-    //         preprocess_testset(standard);
-    //         ANN ann = new ANN();
-    //         buildTrainNetwork(ann, file);
-    //         double testAcc = ann.eval(testset);
-    //         output[0][cycles + index] =  "0".repeat(cycles) + "0".repeat(index - cycle)+ "1".repeat(features - cycles - index);
-    //         index++;
-    //         if (index == features){
-    //             cycles++;
-    //             index = cycles;
-    //         }
-    //     }
-    // }
+        double[][] trainingSetX = Arrays.copyOfRange(trainset.getX(), devLength, length);
+        double[][] trainingSetY = Arrays.copyOfRange(trainset.getY(), devLength, length);
+        Dataset experimentset = new Dataset(exSetX, exSetY);
+        trainset = new Dataset(trainingSetX, trainingSetY);
+        
+        String[] FEATURES = {"1", "2", "3", "4", "5", "6", "7"};
+
+        TreeMap<String, Double> data = new TreeMap<String, Double>();
+        testFeaures(trainset, experimentset, devset, FEATURES, rnd, data, file);
+        print_results(data, "Features in Use", "data/features/features.csv");
+        
+    }
+
+    /**
+     * Evaluates the model for the current features and recursively removes features
+     * @param trainset the training data
+     * @param devset the development data
+     * @param testset the test data for evaulation | doesn't use test.txt is subset of trainset
+     * @param features features being evaulated
+     * @param rnd for reproducibility
+     * @param data stores the results of the experiments
+     * @throws Exception
+     */
+    public static void testFeaures(Dataset trainset, Dataset devset, Dataset testset, String[] features, Random rnd, TreeMap<String, Double> data, String file) throws Exception {
+        // Run neural network add output to 
+        ANN ann = new ANN();
+        buildTrainNetwork(ann, file, rnd, trainset, devset);
+        double eval = ann.eval(testset);
+        data.put(Arrays.toString(features).replaceAll(",", ""), eval);
+        if (features.length > 1) {
+            for (int i = 0; i < features.length; i++) {
+                Dataset newTrainset = extract(trainset, i);
+                Dataset newDevset = extract(devset, i);
+                Dataset newTestset = extract(testset, i);
+                String[] newFeatures = removeIndex(features, i);
+                testFeaures(newTrainset, newDevset, newTestset, newFeatures, rnd, data, file);
+            }
+        }
+
+    }
+    
+    /**
+     * Removes a feature from the dataset
+     * @param dataset the dataset being manipulated
+     * @param index the feature being removed
+     * @return a new dataset without removed feature
+     */
+    public static Dataset extract(Dataset dataset, int index) {
+        double[][] x = dataset.getX();
+        double[][] newX = new double[dataset.getSize()][dataset.getInputDims() - 1];
+        for (int i = 0; i < dataset.getSize(); i++) {
+            int offset = 0;
+            for (int j = 0; j < dataset.getInputDims(); j++) {
+                if (j != index) {
+                    newX[i][j] = x[i][j + offset];
+                }
+                else {
+                    offset++;
+                }
+            }
+        }
+        return new Dataset(newX, dataset.getY());
+    }
+
+    /**
+     * Removes an index from an array
+     * @param array the array being manipulated
+     * @param index the index being removed
+     * @return a new array without the removed index
+     */
+    public static String[] removeIndex(String[] array, int index) {
+        String[] newArray = new String[array.length]
+        for (int i = 0; i < array.length; i++) {
+            int offset = 0;
+            if (i != index) {
+                newArray[i] = array[i + offset];
+            }
+            else {
+                offset++;
+            }
+        }
+        return newArray;
+    }
+
+
     /**
      * apply data preprocessing (imputation of missing values and standardisation)
      * on trainset (Part 3 only)
+     * 
+     * @param rnd for reproducibility
+     * @throws Exception for any exceptions thrown
      */
-    
     public static void randomHyperParameters(Random rnd) throws Exception{
         // So data is not contained with results from test set
         double[][] standard = preprocess_trainset();
@@ -157,12 +210,18 @@ public class P2Main {
                 }
             }
         }
-        print_results(data);
+        print_results(data, 
+                "Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy\n", "data/experiments/hyperparameters.csv");
     }
     
-    public static void print_results(TreeMap<String, Double> data) throws Exception {
-        FileWriter myWriter = new FileWriter("data/experiments/hyperparameters.csv");
-        myWriter.write("Number of Hidden Layers, Number of Nodes per Hidden Layer, Activation function, learning rate, accuracy\n");
+    /**
+     * Prints the results of the experiments to a file
+     * @param data the results being printed
+     * @throws Exception for any filewrting errors thrown
+     */
+    public static void print_results(TreeMap<String, Double> data, String head, String filePath) throws Exception {
+        FileWriter myWriter = new FileWriter(filePath);
+        myWriter.write(head);
         for (String key : data.keySet()) {
             myWriter.write(key + "," + data.get(key) + "\n");
         }
@@ -239,7 +298,15 @@ public class P2Main {
         testset = new Dataset(xValues, dataset.getY());
         
     }
-    public static void buildTrainNetwork(ANN ann, String file, Random rnd) throws Exception {
+
+    /**
+     * Builds and trains an artificial neural network
+     * @param ann the neural network being built and trained
+     * @param file the file of all the setting for the neural network
+     * @param rnd random number for reproducibility
+     * @throws Exception for any exceptions thrown
+     */
+    public static void buildTrainNetwork(ANN ann, String file, Random rnd, Dataset train, Dataset dev) throws Exception {
         JSONParser parser = new JSONParser();
         int hiddenLayers;
         int hiddenLayerNodes;
@@ -259,19 +326,16 @@ public class P2Main {
         epochs = ((Long) jsonObject.get("nEpochs")).intValue();
         patience = ((Long) jsonObject.get("patience")).intValue();
 
-        System.out.println("Error Logging Prints...");
-        System.out.println("Dimension Test Set Size: " + trainset.getSize());
-        System.out.println("Dimension Dev Set Size: " + devset.getSize());
         // build and train an ANN with the given data and parameters
 
         int OUTPUT_DIMENSIONS = 3;
         // building the network
-        Layer network = ann.build(trainset.getInputDims(), OUTPUT_DIMENSIONS, hiddenLayers, hiddenLayerNodes,
+        Layer network = ann.build(train.getInputDims(), OUTPUT_DIMENSIONS, hiddenLayers, hiddenLayerNodes,
                 activationFunction);
         Loss crossEntropy = new CrossEntropy();
         Optimizer sGradientDescent = new SGD(network, learningRate);
         // training the network
-        ann.train(crossEntropy, sGradientDescent, trainset, devset, batchSize, epochs, patience, rnd);
+        ann.train(crossEntropy, sGradientDescent, train, dev, batchSize, epochs, patience, rnd);
     }
     public static void main(String[] args) {
         if (args.length < 4) {
@@ -335,13 +399,16 @@ public class P2Main {
                 if (args[5].equals("1")) {
                     randomHyperParameters(rnd);
                 }
+                else if (args[5].equals("2")) {
+                    featureImportance(rnd, args[3]);
+                }
                 return;
             }
             // read all parameters from the provided json setting file (see
             // settings/example.json for an example)
             //// YOUR CODE HERE
             ANN ann = new ANN();
-            buildTrainNetwork(ann, args[3], rnd);
+            buildTrainNetwork(ann, args[3], rnd, trainset, devset);
             // evaluate the trained ANN on the test set and report results
             try {
                 double testAcc = ann.eval(testset);
