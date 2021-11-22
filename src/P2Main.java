@@ -121,13 +121,10 @@ public class P2Main {
         for (int i = 0; i < dataset.getSize(); i++) {
             int offset = 0;
             for (int j = 0; j < dataset.getInputDims() - 1; j++) {
-                if (j != index) {
-                    newX[i][j] = x[i][j + offset];
-                }
-                else {
+                if (j == index) {
                     offset++;
-                    newX[i][j] = x[i][j + offset];
                 }
+                newX[i][j] = x[i][j + offset];
             }
         }
         return new Dataset(newX, dataset.getY());
@@ -141,15 +138,12 @@ public class P2Main {
      */
     public static String[] removeIndex(String[] array, int index) {
         String[] newArray = new String[array.length - 1];
+        int offset = 0;
         for (int i = 0; i < newArray.length; i++) {
-            int offset = 0;
-            if (i != index) {
-                newArray[i] = array[i + offset];
-            }
-            else {
+            if (i == index) {
                 offset++;
-                newArray[i] = array[i + offset];
             }
+            newArray[i] = array[i + offset];
         }
         return newArray;
     }
@@ -400,7 +394,6 @@ public class P2Main {
 
             // Determins which experiment is being performed
             if (args.length == 6) {
-                System.out.println("ARGS: " + args[5]);
                 if (args[5].equals("1")) {
                     randomHyperParameters(rnd);
                 }
