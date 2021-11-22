@@ -74,7 +74,7 @@ public class P2Main {
 
         TreeMap<String, Double> data = new TreeMap<String, Double>();
         testFeaures(trainset, experimentset, devset, FEATURES, rnd, data, file);
-        print_results(data, "Features in Use", "data/features/features.csv");
+        print_results(data, "Features in Use", "data/features.csv");
         
     }
 
