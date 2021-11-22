@@ -119,7 +119,7 @@ public class P2Main {
             int offset = 0;
             for (int j = 0; j < dataset.getInputDims(); j++) {
                 if (j != index) {
-                    newX[i][j] = x[i][j + offset];
+                    newX[i][j] = x[i][j - offset];
                 }
                 else {
                     offset++;
@@ -140,7 +140,7 @@ public class P2Main {
         for (int i = 0; i < array.length; i++) {
             int offset = 0;
             if (i != index) {
-                newArray[i] = array[i + offset];
+                newArray[i] = array[i - offset];
             }
             else {
                 offset++;
