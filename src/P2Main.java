@@ -136,7 +136,7 @@ public class P2Main {
      * @return a new array without the removed index
      */
     public static String[] removeIndex(String[] array, int index) {
-        String[] newArray = new String[array.length]
+        String[] newArray = new String[array.length];
         for (int i = 0; i < array.length; i++) {
             int offset = 0;
             if (i != index) {
